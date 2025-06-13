@@ -4,7 +4,7 @@ A Vue.js application for displaying live EVE Online killmails from zKillboard as
 
 ## Features
 
-- 🎨 Clean, OBS-compatible overlay design
+- 🎨 Clean, OBS-compatible overlay design :)
 - 🔄 Real-time data from zKillboard + ESI APIs
 - ✨ Smooth fade-in animations for new kills
 - 🌓 Dark/light theme support
