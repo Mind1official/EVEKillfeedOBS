@@ -1,0 +1,17 @@
+{
+  "name": "eve-killfeed/wordpress-plugin",
+  "description": "EVE Online Killfeed WordPress Plugin with ESI Integration",
+  "type": "wordpress-plugin",
+  "require": {
+    "php": ">=7.4",
+    "tkhamez/swagger-eve-php": "^2.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "EveKillfeed\\": "includes/"
+    }
+  },
+  "config": {
+    "optimize-autoloader": true
+  }
+}

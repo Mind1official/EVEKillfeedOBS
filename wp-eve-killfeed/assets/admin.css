@@ -1,0 +1,314 @@
+/* EVE Killfeed Admin Styles */
+.eve-killfeed-dashboard .postbox-container {
+    float: left;
+    margin-right: 20px;
+}
+
+.eve-killfeed-dashboard .postbox-container:last-child {
+    margin-right: 0;
+}
+
+.eve-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.stat-item {
+    text-align: center;
+    padding: 20px;
+    background: #f9f9f9;
+    border-radius: 6px;
+    border: 1px solid #e1e1e1;
+}
+
+.stat-item h3 {
+    font-size: 2.2em;
+    color: #0073aa;
+    margin: 0 0 8px 0;
+    font-weight: 600;
+}
+
+.stat-item p {
+    margin: 0;
+    color: #666;
+    font-size: 14px;
+}
+
+.eve-status-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.eve-status-item:last-child {
+    border-bottom: none;
+}
+
+.eve-status-item label {
+    font-weight: 500;
+    color: #333;
+}
+
+.status-indicator {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #dc3232;
+    display: inline-block;
+    box-shadow: 0 0 0 2px rgba(220, 50, 50, 0.2);
+}
+
+.status-indicator.active {
+    background: #46b450;
+    box-shadow: 0 0 0 2px rgba(70, 180, 80, 0.2);
+}
+
+.system-input {
+    display: flex;
+    gap: 8px;
+    margin-top: 15px;
+    position: relative;
+}
+
+.system-input input[type="text"] {
+    flex: 1;
+    padding: 6px 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.system-input .button {
+    padding: 6px 12px;
+    height: auto;
+    line-height: 1.4;
+}
+
+/* System Autocomplete Styles */
+.system-autocomplete {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 60px; /* Account for button width */
+    background: #fff;
+    border: 1px solid #ddd;
+    border-top: none;
+    border-radius: 0 0 4px 4px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    max-height: 300px;
+    overflow-y: auto;
+    z-index: 1000;
+    display: none;
+}
+
+.autocomplete-item {
+    padding: 10px 12px;
+    cursor: pointer;
+    border-bottom: 1px solid #f0f0f0;
+    transition: background-color 0.2s ease;
+}
+
+.autocomplete-item:last-child {
+    border-bottom: none;
+}
+
+.autocomplete-item:hover,
+.autocomplete-item.active {
+    background-color: #f8f9fa;
+}
+
+.autocomplete-item .system-name {
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 2px;
+}
+
+.autocomplete-item .system-details {
+    display: flex;
+    gap: 10px;
+    font-size: 12px;
+    color: #666;
+}
+
+.autocomplete-item .security {
+    font-weight: 500;
+    padding: 1px 4px;
+    border-radius: 2px;
+    font-size: 11px;
+}
+
+.autocomplete-item .security.highsec {
+    background: #4CAF50;
+    color: white;
+}
+
+.autocomplete-item .security.lowsec {
+    background: #FF9800;
+    color: white;
+}
+
+.autocomplete-item .security.nullsec {
+    background: #F44336;
+    color: white;
+}
+
+.autocomplete-item .security.unknown {
+    background: #9E9E9E;
+    color: white;
+}
+
+.autocomplete-item .region {
+    color: #888;
+    font-style: italic;
+}
+
+#monitored-systems-list ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+#monitored-systems-list li {
+    padding: 8px 0;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#monitored-systems-list li:last-child {
+    border-bottom: none;
+}
+
+.remove-system {
+    cursor: pointer;
+    color: #dc3232;
+    font-weight: bold;
+    font-size: 16px;
+    padding: 2px 6px;
+    border-radius: 3px;
+    transition: background-color 0.2s ease;
+}
+
+.remove-system:hover {
+    background-color: rgba(220, 50, 50, 0.1);
+}
+
+/* Recent kills table */
+.wp-list-table.widefat {
+    border: 1px solid #c3c4c7;
+    border-radius: 4px;
+}
+
+.wp-list-table.widefat th,
+.wp-list-table.widefat td {
+    padding: 8px 10px;
+    vertical-align: middle;
+}
+
+.wp-list-table.widefat thead th {
+    background: #f6f7f7;
+    border-bottom: 1px solid #c3c4c7;
+    font-weight: 600;
+}
+
+.wp-list-table.widefat tbody tr:nth-child(even) {
+    background: #f9f9f9;
+}
+
+.wp-list-table.widefat tbody tr:hover {
+    background: #f0f8ff;
+}
+
+/* API Information */
+.wrap code {
+    background: #f1f1f1;
+    padding: 3px 6px;
+    border-radius: 3px;
+    font-family: 'Courier New', monospace;
+    font-size: 13px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1200px) {
+    .eve-killfeed-dashboard {
+        flex-direction: column;
+    }
+    
+    .eve-killfeed-dashboard .postbox-container {
+        width: 100% !important;
+        margin-right: 0;
+        margin-bottom: 20px;
+    }
+}
+
+@media (max-width: 768px) {
+    .eve-stats-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .eve-status-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
+    }
+    
+    .system-input {
+        flex-direction: column;
+    }
+    
+    .system-input input[type="text"] {
+        margin-bottom: 8px;
+    }
+    
+    .system-autocomplete {
+        right: 0;
+    }
+}
+
+/* Loading states */
+.button[disabled] {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* Quick actions styling */
+.postbox .inside p {
+    margin-bottom: 15px;
+}
+
+.postbox .inside p:last-child {
+    margin-bottom: 0;
+}
+
+.button.button-primary {
+    background: #0073aa;
+    border-color: #0073aa;
+}
+
+.button.button-primary:hover {
+    background: #005a87;
+    border-color: #005a87;
+}
+
+/* Success/Error messages */
+.notice {
+    margin: 15px 0;
+    padding: 12px;
+    border-left: 4px solid #0073aa;
+    background: #fff;
+    box-shadow: 0 1px 1px rgba(0,0,0,.04);
+}
+
+.notice.notice-success {
+    border-left-color: #46b450;
+}
+
+.notice.notice-error {
+    border-left-color: #dc3232;
+}
