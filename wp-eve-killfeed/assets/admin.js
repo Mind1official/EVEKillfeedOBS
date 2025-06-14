@@ -452,7 +452,7 @@ jQuery(document).ready(function($) {
         $.ajax({
             url: eveKillfeedAjax.ajaxurl,
             type: 'POST',
-            data: {
+            data: {  
                 action: 'eve_killfeed_save_systems',
                 nonce: eveKillfeedAjax.nonce,
                 systems: systems

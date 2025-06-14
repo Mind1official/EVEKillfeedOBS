@@ -8,9 +8,14 @@ class EVE_Killfeed_ZKillboard_API {
     private $base_url = 'https://zkillboard.com/api/';
     private $user_agent;
     private $rate_limit_delay = 2; // seconds between requests
+    private $systems_table;
+    private $regions_table;
     
     public function __construct() {
         $this->user_agent = 'EVE Killfeed WordPress Plugin/' . EVE_KILLFEED_VERSION . ' (WordPress)';
+        global $wpdb;
+        $this->systems_table = $wpdb->prefix . 'eve_systems';
+        $this->regions_table = $wpdb->prefix . 'eve_regions';
     }
     
     /**
@@ -117,52 +122,16 @@ class EVE_Killfeed_ZKillboard_API {
      * Get system ID from name
      */
     private function get_system_id($system_name) {
-        $cache_key = 'eve_system_id_' . md5(strtolower($system_name));
-        $cached_id = get_transient($cache_key);
-        
-        if ($cached_id !== false) {
-            return $cached_id;
-        }
-        
-        // Known system IDs for popular systems
-        $known_systems = array(
-            // Major Trade Hubs
-            'jita' => 30000142,
-            'amarr' => 30002187,
-            'dodixie' => 30002659,
-            'rens' => 30002510,
-            'hek' => 30000144,
-            'perimeter' => 30045349,
-            
-            // Popular PvP Systems
-            'efm-c4' => 30000783,
-            'tama' => 30002813,
-            'amamake' => 30002537,
-            'rancer' => 30001372,
-            'uedama' => 30000210,
-            'niarja' => 30002505,
-            
-            // Additional Systems
-            'old man star' => 30003046,
-            'luminaire' => 30000139,
-            'maurasi' => 30045352,
+        global $wpdb;
+
+        $systemId = $wpdb->get_var(
+            $wpdb->prepare(
+                "SELECT id FROM {$this->systems_table} WHERE system_name = %s",
+                $system_name
+            )
         );
-        
-        $system_lower = strtolower($system_name);
-        if (isset($known_systems[$system_lower])) {
-            $system_id = $known_systems[$system_lower];
-            set_transient($cache_key, $system_id, 24 * HOUR_IN_SECONDS);
-            EVE_Killfeed_Database::log('info', "Found known system ID {$system_id} for {$system_name}");
-            return $system_id;
-        }
-        
-        // Try ESI search for unknown systems
-        $system_id = $this->search_system_esi($system_name);
-        if ($system_id) {
-            set_transient($cache_key, $system_id, 24 * HOUR_IN_SECONDS);
-            EVE_Killfeed_Database::log('info', "ESI search found system ID {$system_id} for {$system_name}");
-            return $system_id;
-        }
+
+        return $systemId;
         
         EVE_Killfeed_Database::log('warning', "System '{$system_name}' not found");
         return false;
@@ -172,85 +141,21 @@ class EVE_Killfeed_ZKillboard_API {
      * Get region ID from name
      */
     private function get_region_id($region_name) {
-        $cache_key = 'eve_region_id_' . md5(strtolower($region_name));
-        $cached_id = get_transient($cache_key);
-        
-        if ($cached_id !== false) {
-            return $cached_id;
-        }
-        
-        // Known region IDs for popular regions
-        $known_regions = array(
-            // High-sec Trade Regions
-            'the forge' => 10000002,
-            'domain' => 10000043,
-            'sinq laison' => 10000032,
-            'heimatar' => 10000030,
-            'metropolis' => 10000042,
+        global $wpdb;
+
+        try {
+            $regionId = $wpdb->get_var(
+                $wpdb->prepare(
+                    "SELECT id FROM {$this->regions_table} WHERE region_name = %s",
+                    $region_name
+                )
+            );
+
+            EVE_Killfeed_Database::log('info', "Found Region ID '{$regionId}' for '{$region_name}'");
             
-            // PvP Regions
-            'black rise' => 10000069,
-            'placid' => 10000048,
-            'genesis' => 10000067,
-            'the citadel' => 10000033,
-            'essence' => 10000064,
-            'molden heath' => 10000028,
-            'the bleak lands' => 10000034,
-            
-            // Null-sec Regions
-            'delve' => 10000060,
-            'fountain' => 10000054,
-            'catch' => 10000014,
-            'providence' => 10000039,
-            'syndicate' => 10000040,
-            'curse' => 10000012,
-            'stain' => 10000022,
-            'querious' => 10000045,
-            'period basis' => 10000062,
-            'pure blind' => 10000023,
-            'fade' => 10000041,
-            'cloud ring' => 10000046,
-            'outer ring' => 10000053,
-            'venal' => 10000015,
-            'tribute' => 10000010,
-            'vale of the silent' => 10000063,
-            'branch' => 10000055,
-            'tenal' => 10000031,
-            'deklein' => 10000001,
-            'geminate' => 10000029,
-            'etherium reach' => 10000027,
-            'the kalevala expanse' => 10000038,
-            'perrigen falls' => 10000066,
-            'cobalt edge' => 10000052,
-            'outer passage' => 10000021,
-            'malpais' => 10000013,
-            'scalding pass' => 10000008,
-            'wicked creek' => 10000006,
-            'cache' => 10000007,
-            'insmother' => 10000009,
-            'detorid' => 10000005,
-            'immensea' => 10000025,
-            'tenerifis' => 10000061,
-            'omist' => 10000057,
-            'feythabolis' => 10000056,
-            'esoteria' => 10000059,
-            'paragon soul' => 10000058,
-        );
-        
-        $region_lower = strtolower($region_name);
-        if (isset($known_regions[$region_lower])) {
-            $region_id = $known_regions[$region_lower];
-            set_transient($cache_key, $region_id, 24 * HOUR_IN_SECONDS);
-            EVE_Killfeed_Database::log('info', "Found known region ID {$region_id} for {$region_name}");
-            return $region_id;
-        }
-        
-        // Try ESI search for unknown regions
-        $region_id = $this->search_region_esi($region_name);
-        if ($region_id) {
-            set_transient($cache_key, $region_id, 24 * HOUR_IN_SECONDS);
-            EVE_Killfeed_Database::log('info', "ESI search found region ID {$region_id} for {$region_name}");
-            return $region_id;
+            return $regionId;
+        } catch (Exception $e) {
+            EVE_Killfeed_Database::log('warning', $e->getMessage());
         }
         
         EVE_Killfeed_Database::log('warning', "Region '{$region_name}' not found");

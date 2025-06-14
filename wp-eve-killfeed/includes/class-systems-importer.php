@@ -202,9 +202,9 @@ class EVE_Killfeed_Systems_Importer {
         }
         
         $region_info = array(
-            'region_id' => $region_id,
+            'id' => $region_id,
             'region_name' => $region_data['name'] ?? "Region {$region_id}",
-            'description' => $this->generate_region_description($region_data),
+            'description' => $region_data['description'],
             'is_popular' => $this->is_popular_region($region_data['name'] ?? ''),
             'is_monitored' => 0
         );
@@ -276,47 +276,6 @@ class EVE_Killfeed_Systems_Importer {
         set_transient($cache_key, $data, 24 * HOUR_IN_SECONDS);
         
         return $data;
-    }
-    
-    /**
-     * Generate region description based on known information
-     */
-    private function generate_region_description($region_data) {
-        $name = strtolower($region_data['name'] ?? '');
-        
-        // Known region descriptions
-        $descriptions = array(
-            'the forge' => 'Major trade hub region containing Jita',
-            'domain' => 'Amarr Empire heartland with Amarr trade hub',
-            'sinq laison' => 'Gallente trade region with Dodixie',
-            'heimatar' => 'Minmatar trade region with Rens',
-            'metropolis' => 'Minmatar region with Hek trade hub',
-            'black rise' => 'Faction Warfare lowsec region',
-            'placid' => 'Lowsec PvP region',
-            'genesis' => 'Mixed security PvP region',
-            'delve' => 'Major null-sec region, home to large alliances',
-            'fountain' => 'Western null-sec region',
-            'catch' => 'Southern null-sec region',
-            'providence' => 'NRDS null-sec region',
-            'syndicate' => 'NPC null-sec region',
-            'curse' => 'NPC null-sec region with unique mechanics',
-            'stain' => 'NPC null-sec region',
-            'venal' => 'NPC null-sec region',
-            'great wildlands' => 'Mixed low/null-sec region',
-            'molden heath' => 'Lowsec region popular for small gang PvP',
-            'the bleak lands' => 'Faction Warfare lowsec region',
-        );
-        
-        if (isset($descriptions[$name])) {
-            return $descriptions[$name];
-        }
-        
-        // Generate generic description based on region characteristics
-        if (strpos($name, 'wormhole') !== false || preg_match('/^[A-Z]\d{3}-[A-Z]\d$/', $region_data['name'] ?? '')) {
-            return 'Wormhole space region';
-        }
-        
-        return 'EVE Online region';
     }
     
     /**

@@ -527,7 +527,6 @@ class EVE_Killfeed_Plugin {
                 'constellation_name' => '',
                 'security_status' => $system['security_status'] ?? 0.0,
                 'security_class' => $this->get_security_class($system['security_status'] ?? 0.0),
-                'is_popular' => 0,
                 'is_monitored' => 0
             ),
             array('%d', '%s', '%d', '%s', '%d', '%s', '%f', '%s', '%d', '%d')
