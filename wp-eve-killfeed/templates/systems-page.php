@@ -7,8 +7,6 @@ if (!defined('ABSPATH')) {
 $systems_manager = EVE_Killfeed_Systems_Manager::get_instance();
 $monitored_systems = $systems_manager->get_monitored_systems();
 $monitored_regions = $systems_manager->get_monitored_regions();
-$popular_systems = $systems_manager->get_popular_systems(20);
-$popular_regions = $systems_manager->get_popular_regions(20);
 $system_stats = $systems_manager->get_system_stats();
 
 // Get recently tracked systems from user meta or option
@@ -190,7 +188,7 @@ $recently_tracked = get_option('eve_killfeed_recently_tracked', array());
                     <div class="no-regions">
                         <div class="no-regions-icon">🌌</div>
                         <h3><?php _e('No regions monitored', 'eve-killfeed'); ?></h3>
-                        <p><?php _e('Search for regions above or use the popular regions to get started.', 'eve-killfeed'); ?></p>
+                        <p><?php _e('Search for regions above to get started.', 'eve-killfeed'); ?></p>
                     </div>
                 <?php endif; ?>
             </div>
@@ -335,12 +333,6 @@ $recently_tracked = get_option('eve_killfeed_recently_tracked', array());
                         <span class="preset-desc">Tama, Amamake, Rancer, EFM-C4</span>
                     </button>
                     
-                    <button type="button" class="preset-btn" data-preset="faction-warfare">
-                        <span class="preset-icon">🚀</span>
-                        <span class="preset-name"><?php _e('Faction Warfare', 'eve-killfeed'); ?></span>
-                        <span class="preset-desc">Popular FW systems</span>
-                    </button>
-                    
                     <button type="button" class="preset-btn" data-preset="lowsec-roam">
                         <span class="preset-icon">🌙</span>
                         <span class="preset-name"><?php _e('Lowsec Roam', 'eve-killfeed'); ?></span>
@@ -378,59 +370,6 @@ $recently_tracked = get_option('eve_killfeed_recently_tracked', array());
                     </button>
                 </div>
             </div>
-            
-            <!-- Popular Systems -->
-            <div class="systems-card">
-                <h2><?php _e('Popular Systems', 'eve-killfeed'); ?></h2>
-                <div class="popular-systems">
-                    <?php foreach ($popular_systems as $system): ?>
-                        <div class="popular-system <?php echo $system['is_monitored'] ? 'monitored' : ''; ?>" 
-                             data-system="<?php echo esc_attr($system['system_name']); ?>">
-                            <div class="system-info">
-                                <span class="system-name"><?php echo esc_html($system['system_name']); ?></span>
-                                <span class="system-meta">
-                                    <span class="security-badge <?php echo esc_attr($system['security_class']); ?>">
-                                        <?php echo number_format($system['security_status'], 1); ?>
-                                    </span>
-                                </span>
-                            </div>
-                            <div class="system-status">
-                                <?php if ($system['is_monitored']): ?>
-                                    <span class="status-badge active">✓</span>
-                                <?php else: ?>
-                                    <span class="status-badge inactive">+</span>
-                                <?php endif; ?>
-                            </div>
-                        </div>
-                    <?php endforeach; ?>
-                </div>
-            </div>
-
-            <!-- Popular Regions -->
-            <div class="systems-card">
-                <h2><?php _e('Popular Regions', 'eve-killfeed'); ?></h2>
-                <div class="popular-regions">
-                    <?php foreach ($popular_regions as $region): ?>
-                        <div class="popular-region <?php echo $region['is_monitored'] ? 'monitored' : ''; ?>" 
-                             data-region="<?php echo esc_attr($region['region_name']); ?>">
-                            <div class="region-info">
-                                <span class="region-name"><?php echo esc_html($region['region_name']); ?></span>
-                                <span class="region-meta">
-                                    <span class="region-description"><?php echo esc_html($region['description'] ?? 'EVE region'); ?></span>
-                                </span>
-                            </div>
-                            <div class="region-status">
-                                <?php if ($region['is_monitored']): ?>
-                                    <span class="status-badge active">✓</span>
-                                <?php else: ?>
-                                    <span class="status-badge inactive">+</span>
-                                <?php endif; ?>
-                            </div>
-                        </div>
-                    <?php endforeach; ?>
-                </div>
-            </div>
-            
         </div>
     </div>
 </div>
@@ -915,35 +854,6 @@ $recently_tracked = get_option('eve_killfeed_recently_tracked', array());
     color: #666;
 }
 
-/* Popular Systems & Regions */
-.popular-systems, .popular-regions {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-
-.popular-system, .popular-region {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px;
-    background: #f9f9f9;
-    border: 1px solid #e0e0e0;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-.popular-system:hover, .popular-region:hover {
-    background: #f0f8ff;
-    border-color: #0073aa;
-}
-
-.popular-system.monitored, .popular-region.monitored {
-    background: #e8f5e8;
-    border-color: #46b450;
-}
-
 .status-badge {
     width: 20px;
     height: 20px;
@@ -1096,18 +1006,6 @@ jQuery(document).ready(function($) {
     // Handle region search result clicks
     $(document).on('click', '#region-search-results .search-result-item', function() {
         const regionName = $(this).data('region-name');
-        const isMonitored = $(this).hasClass('monitored');
-        
-        if (isMonitored) {
-            removeRegionFromMonitoring(regionName);
-        } else {
-            addRegionToMonitoring(regionName);
-        }
-    });
-    
-    // Handle popular region clicks
-    $(document).on('click', '.popular-region', function() {
-        const regionName = $(this).data('region');
         const isMonitored = $(this).hasClass('monitored');
         
         if (isMonitored) {
@@ -1481,18 +1379,6 @@ jQuery(document).ready(function($) {
     // Handle search result clicks
     $(document).on('click', '#system-search-results .search-result-item', function() {
         const systemName = $(this).data('system-name');
-        const isMonitored = $(this).hasClass('monitored');
-        
-        if (isMonitored) {
-            removeSystemFromMonitoring(systemName);
-        } else {
-            addSystemToMonitoring(systemName);
-        }
-    });
-    
-    // Handle popular system clicks
-    $(document).on('click', '.popular-system', function() {
-        const systemName = $(this).data('system');
         const isMonitored = $(this).hasClass('monitored');
         
         if (isMonitored) {

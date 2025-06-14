@@ -247,7 +247,7 @@ class EVE_Killfeed_REST_API {
         
         $sql = $wpdb->prepare(
             "SELECT k.*,s.security_status FROM {$table_name} k
-			 JOIN wp_eve_systems s ON k.system_id = s.system_id
+			 JOIN wp_eve_systems s ON k.system_id = s.id
              {$where_sql} 
              ORDER BY {$args['order_by']} {$args['order']} 
              LIMIT %d OFFSET %d",

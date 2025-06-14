@@ -7445,7 +7445,7 @@ var require_main = __commonJS({
           const lHeader = normalizeHeader(_header);
           if (!accessors[lHeader]) {
             buildAccessors(prototype2, _header);
-            accessors[lHeader] = true;
+            accessors[lHeader] = true;  
           }
         }
         utils$1.isArray(header) ? header.forEach(defineAccessor) : defineAccessor(header);
