@@ -9837,42 +9837,34 @@ var require_main = __commonJS({
                 console.log("WordPress mode: Using backend monitoring configuration (ignoring URL parameters)");
               }
               const newKillmails = yield killfeedAPI.getKillmails(systemList, regionList, props.maxKills);
-              newKillmails = newKillmails.filter((kill) => kill.total_value >= 1e6);
-              console.log("Received killmails:", newKillmails);
-              console.log("Number of killmails:", newKillmails.length);
-              if (newKillmails.length > 0) {
-                console.log("Sample killmail:", newKillmails[0]);
-                const isRealData = newKillmails.some(
+              
+              // Create a NEW constant with the filtered results
+              const filteredKillmails = newKillmails.filter((kill) => kill.total_value >= 2.5e5);
+
+              console.log("Received killmails:", newKillmails.length);
+              console.log("Number of killmails (after 1M ISK filter):", filteredKillmails.length);
+
+              // Now use 'filteredKillmails' for all subsequent logic
+              if (filteredKillmails.length > 0) {
+                console.log("Sample killmail:", filteredKillmails[0]);
+                const isRealData = filteredKillmails.some(
                   (k) => k.victim_name !== "Unknown Pilot" && k.victim_name !== "Demo Pilot" && !k.victim_name.includes("Test") && !k.victim_name.includes("Pilot #")
                 );
-                debugInfo.value = isRealData ? `✅ Real data: ${newKillmails.length} killmails` : `⚠️ Demo/Limited data: ${newKillmails.length} killmails`;
+                debugInfo.value = isRealData ? `✅ Real data: ${filteredKillmails.length} killmails` : `⚠️ Demo/Limited data: ${filteredKillmails.length} killmails`;
                 console.log("Data type:", isRealData ? "REAL DATA" : "DEMO/LIMITED DATA");
               } else {
-                debugInfo.value = "❌ No killmails received";
+                debugInfo.value = "❌ No killmails received (or all were < 1M ISK)";
               }
               if (killmails.value.length > 0) {
                 const existingIds = new Set(killmails.value.map((k) => k.killmail_id));
                 const freshKillIds = /* @__PURE__ */ new Set();
                 const newKills = [];
-                newKillmails.forEach((kill) => {
+                filteredKillmails.forEach((kill) => {
                   if (!existingIds.has(kill.killmail_id)) {
                     freshKillIds.add(kill.killmail_id);
                     newKills.push(kill);
                   }
                 });
-                if (newKills.length > 0) {
-                  console.log(`🆕 Found ${newKills.length} new killmails for animation`);
-                  killmails.value = [...newKills, ...killmails.value].slice(0, props.maxKills);
-                  newKillIds.value = freshKillIds;
-                  setTimeout(() => {
-                    newKillIds.value.clear();
-                  }, 5e3);
-                } else {
-                  killmails.value = newKillmails;
-                }
-              } else {
-                killmails.value = newKillmails;
-              }
               lastUpdate.value = /* @__PURE__ */ new Date();
               console.log("✅ Killmails updated successfully");
             } catch (err) {
