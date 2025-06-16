@@ -9837,6 +9837,7 @@ var require_main = __commonJS({
                 console.log("WordPress mode: Using backend monitoring configuration (ignoring URL parameters)");
               }
               const newKillmails = yield killfeedAPI.getKillmails(systemList, regionList, props.maxKills);
+              newKillmails = newKillmails.filter((kill) => kill.total_value >= 1e6);
               console.log("Received killmails:", newKillmails);
               console.log("Number of killmails:", newKillmails.length);
               if (newKillmails.length > 0) {
