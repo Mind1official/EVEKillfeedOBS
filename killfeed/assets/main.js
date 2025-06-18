@@ -9740,7 +9740,7 @@ var require_main = __commonJS({
         theme: { default: "dark" },
         maxKills: { default: 50 },
         autoScroll: { type: Boolean, default: true },
-        refreshInterval: { default: 10 * 1000 },
+        refreshInterval: { default: 60 * 1000 },
         systems: { default: () => [] },
         regions: { default: () => [] }
       },
