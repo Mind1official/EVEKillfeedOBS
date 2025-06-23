@@ -8736,11 +8736,20 @@ var require_main = __commonJS({
         __publicField(this, "typeCache", /* @__PURE__ */ new Map());
         const urlParams = new URLSearchParams(window.location.search);
         const apiUrlParam = urlParams.get("api_url");
+
+        // If param provided (OBS use, dev, etc.), use it
         if (apiUrlParam) {
           this.baseUrl = apiUrlParam;
-        } else {
+        }
+        // If served via feed subdomain, use clean proxy
+        else if (location.hostname === "feed.mind1official.com") {
+          this.baseUrl = "/api";
+        }
+        // Fallback to direct mode (ZKB)
+        else {
           this.baseUrl = "direct";
         }
+
         this.apiKey = "";
       }
       setConfig(baseUrl, apiKey = "") {
@@ -9865,6 +9874,20 @@ var require_main = __commonJS({
                     newKills.push(kill);
                   }
                 });
+                if (newKills.length > 0) {
+                  console.log(`🆕 Found ${newKills.length} new killmails for animation`);
+                  killmails.value = [...newKills, ...killmails.value].slice(0, props.maxKills);
+                  newKillIds.value = freshKillIds;
+                  setTimeout(() => {
+                    newKillIds.value.clear();
+                  }, 5e3);
+                } else {
+                  // If no new kills, we still need to update the list in case old ones were removed
+                  killmails.value = filteredKillmails;
+                }
+              } else {
+                killmails.value = filteredKillmails;
+              }
               lastUpdate.value = /* @__PURE__ */ new Date();
               console.log("✅ Killmails updated successfully");
             } catch (err) {
