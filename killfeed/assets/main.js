@@ -8765,7 +8765,7 @@ var require_main = __commonJS({
         }
         return headers;
       }
-      getKillmails(systems, regions, limit = 50) {
+      getKillmails(systems, regions, limit = 100) {
         return __async(this, null, function* () {
           if (this.baseUrl !== "direct") {
             return this.getKillmailsFromWordPress(limit);
@@ -8807,14 +8807,14 @@ var require_main = __commonJS({
       /**
        * Production: Fetch killmails from WordPress backend using its own monitoring configuration
        */
-      getKillmailsFromWordPress(limit = 50) {
+      getKillmailsFromWordPress(limit = 100) {
         return __async(this, null, function* () {
           try {
             console.log("Fetching from WordPress backend:", this.baseUrl);
             console.log("Using WordPress backend monitoring configuration (no URL parameter override)");
             const params = new URLSearchParams();
             params.append("limit", limit.toString());
-            params.append("hours", "24");
+            params.append("hours", "48");
             const url = `${this.baseUrl}/killmails?${params.toString()}`;
             console.log("WordPress API URL:", url);
             const response = yield axios.get(url, {
@@ -8838,7 +8838,7 @@ var require_main = __commonJS({
       /**
        * Development: Direct zKillboard fetch for Bolt environment with region support
        */
-      getKillmailsDirectFromZkb(systems, regions, limit = 50) {
+      getKillmailsDirectFromZkb(systems, regions, limit = 100) {
         return __async(this, null, function* () {
           console.log("🔧 Development mode: Fetching live data from zKillboard");
           const targetSystems = systems && systems.length > 0 ? systems : [];
@@ -9747,7 +9747,7 @@ var require_main = __commonJS({
       props: {
         obsMode: { type: Boolean, default: false },
         theme: { default: "dark" },
-        maxKills: { default: 50 },
+        maxKills: { default: 100 },
         autoScroll: { type: Boolean, default: true },
         refreshInterval: { default: 60 * 1000 },
         systems: { default: () => [] },
@@ -10863,7 +10863,7 @@ var require_main = __commonJS({
       setup(__props) {
         const obsMode = ref(false);
         const theme = ref("dark");
-        const maxKills = ref(50);
+        const maxKills = ref(100);
         const autoScroll = ref(true);
         const testMode = ref(false);
         const apiTestMode = ref(false);
@@ -10893,7 +10893,7 @@ var require_main = __commonJS({
           }
           const maxKillsParam = urlParams.get("max_kills");
           if (maxKillsParam) {
-            maxKills.value = parseInt(maxKillsParam, 10) || 50;
+            maxKills.value = parseInt(maxKillsParam, 10) || 100;
           }
           const autoScrollParam = urlParams.get("auto_scroll");
           if (autoScrollParam) {

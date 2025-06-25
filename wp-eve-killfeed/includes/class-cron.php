@@ -147,7 +147,7 @@ class EVE_Killfeed_Cron {
                 $system_start_time = microtime(true);
                 EVE_Killfeed_Database::log('info', "Fetching killmails for system: {$system_name}");
                 
-                $killmails = $zkb_api->get_system_killmails($system_name, 50); // Limit to 50 per system
+                $killmails = $zkb_api->get_system_killmails($system_name, 100); // Limit to 100 per system
                 
                 if ($killmails === false) {
                     $error_msg = "Failed to fetch killmails for system: {$system_name}";
@@ -354,7 +354,7 @@ class EVE_Killfeed_Cron {
      */
     public function cleanup_old_data() {
         $database = EVE_Killfeed_Database::get_instance();
-        $retention_hours = get_option('eve_killfeed_retention_hours', 24);
+        $retention_hours = get_option('eve_killfeed_retention_hours', 48);
         
         $deleted = $database->cleanup_old_killmails($retention_hours);
         
