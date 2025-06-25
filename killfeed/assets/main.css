@@ -409,7 +409,7 @@ to {
   background: #00b8e6;
 }
 .killmail-list[data-v-3ec1cf86] {
-  max-height: 80vh;
+  max-height: 5000px;
   overflow-y: auto;
 }
 .killmail-list.auto-scroll[data-v-3ec1cf86] {
@@ -459,7 +459,7 @@ to {
     font-size: 20px;
 }
 .killmail-list[data-v-3ec1cf86] {
-    max-height: 70vh;
+    max-height: 10000px;
 }
 }
 
