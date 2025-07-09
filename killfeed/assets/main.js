@@ -10037,7 +10037,7 @@ var require_main = __commonJS({
                 }, null, 2),
                 createBaseVNode("span", _hoisted_3$2, toDisplayString(statusText.value), 1)
               ]),
-              monitoringInfo.value ? (openBlock(), createElementBlock("div", _hoisted_4$2, " Monitoring: " + toDisplayString(monitoringInfo.value), 1)) : createCommentVNode("", true),
+              monitoringInfo.value ? (openBlock(), createElementBlock("div", _hoisted_4$2, " Monitoring-> " + toDisplayString(monitoringInfo.value), 1)) : createCommentVNode("", true),
               debugInfo.value ? (openBlock(), createElementBlock("div", _hoisted_5$2, toDisplayString(debugInfo.value), 1)) : createCommentVNode("", true)
             ])) : createCommentVNode("", true),
             createBaseVNode("div", _hoisted_6$2, [
