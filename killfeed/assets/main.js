@@ -9779,19 +9779,26 @@ var require_main = __commonJS({
 
 
         const monitoringInfo = computed(() => {
-          const systemsCount = monitoredSystems.value.length > 0 ? monitoredSystems.value.length : props.systems.length;
-          const regionsCount = monitoredRegions.value.length > 0 ? monitoredRegions.value.length : props.regions.length;
+          // If the items are objects, extract their 'name' property; otherwise, use the value directly
+          const getNames = (arr) =>
+            arr.length > 0
+              ? arr.map(item => typeof item === "object" && item !== null ? item.name || item.region_name || item.system_name || JSON.stringify(item) : item)
+              : [];
+        
+          const systemNames = getNames(monitoredSystems.value.length > 0 ? monitoredSystems.value : props.systems);
+          const regionNames = getNames(monitoredRegions.value.length > 0 ? monitoredRegions.value : props.regions);
+        
           const locations = [];
-          if (systemsCount > 0) {
-            locations.push(`${systemsCount} system${systemsCount > 1 ? "s" : ""}`);
+          if (systemNames.length > 0) {
+            locations.push(`[Systems] ${systemNames.join(", ")}`);
           }
-          if (regionsCount > 0) {
-            locations.push(`${regionsCount} region${regionsCount > 1 ? "s" : ""}`);
+          if (regionNames.length > 0) {
+            locations.push(`[Regions] ${regionNames.join(", ")}`);
           }
           if (locations.length === 0) {
             return "No locations monitored";
           }
-          return locations.join(" + ");
+          return locations.join(" | ");
         });
 
 
