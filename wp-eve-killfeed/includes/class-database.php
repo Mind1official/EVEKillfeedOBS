@@ -297,7 +297,7 @@ class EVE_Killfeed_Database {
         global $wpdb;
         
         $sql = $wpdb->prepare(
-            "DELETE FROM {$this->table_name} WHERE kill_time < DATE_SUB(NOW(), INTERVAL %d HOUR)",
+            "TRUNCATE TABLE {$this->table_name} WHERE kill_time < DATE_SUB(NOW(), INTERVAL %d HOUR)",
             $hours
         );
         
@@ -311,7 +311,7 @@ class EVE_Killfeed_Database {
         global $wpdb;
         
         $table_name = $wpdb->prefix . 'eve_killmails';
-        $result = $wpdb->query("DELETE FROM {$table_name}");
+        $result = $wpdb->query("TRUNCATE TABLE {$table_name}");
         
         return $result;
     }
