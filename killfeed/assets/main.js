@@ -8736,11 +8736,20 @@ var require_main = __commonJS({
         __publicField(this, "typeCache", /* @__PURE__ */ new Map());
         const urlParams = new URLSearchParams(window.location.search);
         const apiUrlParam = urlParams.get("api_url");
+
+        // If param provided (OBS use, dev, etc.), use it
         if (apiUrlParam) {
           this.baseUrl = apiUrlParam;
-        } else {
+        }
+        // If served via feed subdomain, use clean proxy
+        else if (location.hostname === "feed.mind1official.com") {
+          this.baseUrl = "/api";
+        }
+        // Fallback to direct mode (ZKB)
+        else {
           this.baseUrl = "direct";
         }
+
         this.apiKey = "";
       }
       setConfig(baseUrl, apiKey = "") {
@@ -9770,19 +9779,26 @@ var require_main = __commonJS({
 
 
         const monitoringInfo = computed(() => {
-          const systemsCount = monitoredSystems.value.length > 0 ? monitoredSystems.value.length : props.systems.length;
-          const regionsCount = monitoredRegions.value.length > 0 ? monitoredRegions.value.length : props.regions.length;
+          // If the items are objects, extract their 'name' property; otherwise, use the value directly
+          const getNames = (arr) =>
+            arr.length > 0
+              ? arr.map(item => typeof item === "object" && item !== null ? item.name || item.region_name || item.system_name || JSON.stringify(item) : item)
+              : [];
+        
+          const systemNames = getNames(monitoredSystems.value.length > 0 ? monitoredSystems.value : props.systems);
+          const regionNames = getNames(monitoredRegions.value.length > 0 ? monitoredRegions.value : props.regions);
+        
           const locations = [];
-          if (systemsCount > 0) {
-            locations.push(`${systemsCount} system${systemsCount > 1 ? "s" : ""}`);
+          if (systemNames.length > 0) {
+            locations.push(`[Systems] ${systemNames.join(", ")}`);
           }
-          if (regionsCount > 0) {
-            locations.push(`${regionsCount} region${regionsCount > 1 ? "s" : ""}`);
+          if (regionNames.length > 0) {
+            locations.push(`[Regions] ${regionNames.join(", ")}`);
           }
           if (locations.length === 0) {
             return "No locations monitored";
           }
-          return locations.join(" + ");
+          return locations.join(" | ");
         });
 
 
@@ -9865,6 +9881,20 @@ var require_main = __commonJS({
                     newKills.push(kill);
                   }
                 });
+                if (newKills.length > 0) {
+                  console.log(`🆕 Found ${newKills.length} new killmails for animation`);
+                  killmails.value = [...newKills, ...killmails.value].slice(0, props.maxKills);
+                  newKillIds.value = freshKillIds;
+                  setTimeout(() => {
+                    newKillIds.value.clear();
+                  }, 5e3);
+                } else {
+                  // If no new kills, we still need to update the list in case old ones were removed
+                  killmails.value = filteredKillmails;
+                }
+              } else {
+                killmails.value = filteredKillmails;
+              }
               lastUpdate.value = /* @__PURE__ */ new Date();
               console.log("✅ Killmails updated successfully");
             } catch (err) {
@@ -10007,7 +10037,7 @@ var require_main = __commonJS({
                 }, null, 2),
                 createBaseVNode("span", _hoisted_3$2, toDisplayString(statusText.value), 1)
               ]),
-              monitoringInfo.value ? (openBlock(), createElementBlock("div", _hoisted_4$2, " Monitoring: " + toDisplayString(monitoringInfo.value), 1)) : createCommentVNode("", true),
+              monitoringInfo.value ? (openBlock(), createElementBlock("div", _hoisted_4$2, " Monitoring-> " + toDisplayString(monitoringInfo.value), 1)) : createCommentVNode("", true),
               debugInfo.value ? (openBlock(), createElementBlock("div", _hoisted_5$2, toDisplayString(debugInfo.value), 1)) : createCommentVNode("", true)
             ])) : createCommentVNode("", true),
             createBaseVNode("div", _hoisted_6$2, [
