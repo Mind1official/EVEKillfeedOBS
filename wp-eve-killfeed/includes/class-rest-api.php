@@ -28,7 +28,7 @@ class EVE_Killfeed_REST_API {
             'permission_callback' => array($this, 'check_permissions'),
             'args' => array(
                 'limit' => array(
-                    'default' => 50,
+                    'default' => 100, // <- Default limit 
                     'validate_callback' => array($this, 'validate_limit'),
                 ),
                 'offset' => array(
@@ -195,7 +195,7 @@ class EVE_Killfeed_REST_API {
         global $wpdb;
         
         $defaults = array(
-            'limit' => 50,
+            'limit' => 250,
             'offset' => 0,
             'systems' => array(),
             'regions' => array(),
@@ -330,7 +330,7 @@ class EVE_Killfeed_REST_API {
         $systems = array();
         foreach ($monitored_systems as $system) {
             $systems[] = array(
-                'id' => $system['system_id'],
+                'id' => $system['id'],
                 'name' => $system['system_name'],
                 'region_name' => $system['region_name'],
                 'security_status' => $system['security_status'],
@@ -355,7 +355,7 @@ class EVE_Killfeed_REST_API {
         $regions = array();
         foreach ($monitored_regions as $region) {
             $regions[] = array(
-                'id' => $region['region_id'],
+                'id' => $region['id'],
                 'name' => $region['region_name'],
                 'description' => $region['description'],
                 'active' => true,
@@ -419,7 +419,7 @@ class EVE_Killfeed_REST_API {
      * Validation callbacks
      */
     public function validate_limit($param, $request, $key) {
-        return is_numeric($param) && $param > 0 && $param <= 100;
+        return is_numeric($param) && $param > 0 && $param <= 500; // Max limit is 500
     }
     
     public function validate_offset($param, $request, $key) {

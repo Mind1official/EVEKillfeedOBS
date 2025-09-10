@@ -8765,7 +8765,7 @@ var require_main = __commonJS({
         }
         return headers;
       }
-      getKillmails(systems, regions, limit = 50) {
+      getKillmails(systems, regions, limit = 250) {
         return __async(this, null, function* () {
           if (this.baseUrl !== "direct") {
             return this.getKillmailsFromWordPress(limit);
@@ -9747,7 +9747,7 @@ var require_main = __commonJS({
       props: {
         obsMode: { type: Boolean, default: false },
         theme: { default: "dark" },
-        maxKills: { default: 50 },
+        maxKills: { default: 250 },
         autoScroll: { type: Boolean, default: true },
         refreshInterval: { default: 60 * 1000 },
         systems: { default: () => [] },
